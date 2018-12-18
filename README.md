@@ -1,6 +1,5 @@
 # GraphStore
-
-Graph implemented with the OrbitDB distributed db, residing data on IPFS. Valuable properties is that the database stores as a CRDT.
+Graph implemented with the OrbitDB distributed db, residing the data on IPFS. Valuable properties is that the database is an a CRDT.
 
 ## Types of In-Memory Data Structure
 Current implementation uses an Adjacency List (Implemented as 2 Javascript Associative Arrays). Viewed within the `GraphIndex.js` file.
@@ -26,12 +25,13 @@ __Informed Search:__
 Currently assumes that the graph is directional when implementing an edge, which is only done within the path finding. By adding the type of relationship, one can specify whether this is a bi-directional directed edge.
 
 Use cases:
-The graph can be used to represent analyse a p2p network. I.e. Network Analysis, Markov Chain, etc.
+The graph can be used to represent analysis on a p2p network. I.e. Network Analysis, Markov Chain, etc.
 
 ## Centrality Algorithms
 TODO
 
-### Future TODOs
-* Use Web Workers to quick off other process to evaluate best search method? Switch search type to optimize for speed.
+##TODOs
+* Create Unique Vertex IDs
+* Graph CRDT Semantics
 
 
