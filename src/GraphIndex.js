@@ -16,7 +16,6 @@ class GraphIndex {
   }
 
   updateIndex(oplog) {
-
     const reducer = (handled, item) => {
       if(!handled.includes(item.payload.key)) {
         handled.push(item.payload.key)

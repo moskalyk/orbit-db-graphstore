@@ -2,6 +2,7 @@
 
 const Store = require('orbit-db-store')
 const GraphIndex = require('./GraphIndex')
+const algos = require('./utils/algos')
 
 function defaultEdgeId(source, target, id) {
   return `${source}:${target}:${id}`;
@@ -59,7 +60,7 @@ class GraphStore extends Store {
     if(!this.hasVertex(key))
       throw new Error('Vertex does not exist.')
 
-    return this.del(key, data, "REMOVE_VERTEX")
+    return this.del(key, "REMOVE_VERTEX")
   }
 
   deleteEdge (from, to, data) {
@@ -69,7 +70,7 @@ class GraphStore extends Store {
     if (!this.hasEdge(key))
       throw new Error(`No entry with key '${key}' in the database`)
 
-    return this.del(key, data, "REMOVE_EDGE")
+    return this.del(key, "REMOVE_EDGE")
   }
 
   // Updates
@@ -95,30 +96,28 @@ class GraphStore extends Store {
     return this.addressIdentifier(source, target, id);
   }
 
+  // TODO: Optimize?
   getChildren(key){
-    return allEdges().filter(e => e.split(':')[0] == key)
+    return Object.keys(this.allEdges()).map(e => { 
+      if(e.split(':')[0] == key) {
+        return e.split(':')[1]
+      }
+    }).filter(c => c != null)
   }
 
-  //TODO
-  path(from, to) {
-
-    // Check if both nodes exist
-    if(this.hasVertex(from) && this.hasVertex(to))
-      throw new Error(`One of the vertices does not exist`) 
-
-    const queue = []
-    queue.push(from)
-    const visited = new Set()
-
-    // Return Path 
-    const path = new Map();
-
-    
-
-
-
-    return path.reverse();
+  // Uninformed Search using BFS
+  simplePath(from, to, cutoff = Infinity) {
+    return algos.BFS(from, to, this, cutoff);
   }
+
+  unInformedPath(from, to, cutoff = Infinity) {
+    return algos.biDirectionalSearch(from, to, this, cutoff)
+  }
+
+  //TODO: A* or other?
+  // informedPath(from, to, cutoff = Infinity){
+
+  // }
 
   put (key, data, operation) {
     return this._addOperation({
@@ -141,13 +140,10 @@ class GraphStore extends Store {
    * @return {Array} - Each value yielded is a [key, value] pair.
    */
   *[Symbol.iterator]() {
-    const object = this[node];
-
-    for (const key in this._index._vertexIndex) {
-      if (object.hasOwnProperty(key) ) {
+    const vs = this._index._vertexIndex;
+    for (const key in vs) {
         const value = this._index._vertexIndex[key];
         yield [key, value];
-      }
     }
   }
 
