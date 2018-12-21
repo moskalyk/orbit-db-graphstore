@@ -1,7 +1,7 @@
 {
   "name": "orbit-db-graphstore",
   "version": "0.0.1",
-  "description": "Graph store using OrbitDB as a decentralized storage",
+  "description": "Graph Store Interface using OrbitDB as a decentralized storage",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/test"
