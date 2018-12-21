@@ -1,23 +1,18 @@
-
-function isIntersecting (fromVisited, toVisited, vertices){
-	for (var i = vertices.length - 1; i >= 0; i--) {
-		if(fromVisited[i] && toVisited[i]) 
-            return true
-	}
-	return false
-}
-
 function traceBackPath (source, target, parents) {
 	const path = []
 	let current = target
-	for (let key in Object.keys(parents)){
+	Object.keys(parents).forEach( key => {
     	path.push(current)
     	current = parents[current]
-	}
+	})
 	path.push(source)
 	return path.reverse()
 }
-	// TODO: Implement cuttoff
+
+function defaultEdgeId(source, target, id) {
+  return `${source}:${target}:${id}`;
+}
+
 async function BFS(source, target, graph, cutoff) {
 	const queue = [source];
 	const parents = {};
@@ -25,26 +20,22 @@ async function BFS(source, target, graph, cutoff) {
 		const current = queue.shift();
 		if (current == target)
 			return traceBackPath(source, target, parents)
-
 		const children = await graph.getChildren(current);
-		for(let child of children){
+		children.forEach(child => {
 			if(!(child in parents)){
 				parents[child] = current
 				queue.push(child)
+				if(queue.length > cutoff) // Cuttoff
+					throw new Error("Search Path Exceeded");
 			}
-		}
+		})
 	}
 	return []
 }
 
-function biDirectionalSearch(from, to, search = this.BFS) {
-	console.log('Running BiDirectional Search');
-	// TODO
-}
-
 module.exports = {
 	BFS,
-	biDirectionalSearch
+	defaultEdgeId
 }
 
 
